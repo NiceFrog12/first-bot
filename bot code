@@ -1,0 +1,66 @@
+import discord
+import random
+from discord.ext import commands
+
+intents = discord.Intents.default()
+intents.message_content = True
+
+bot = commands.Bot(command_prefix='$', intents=intents)
+
+@bot.event
+async def on_ready():
+    print(f'I am in! My codename is: "{bot.user}')
+
+#eto novaia funkcia, sdelal ee shtob protestit
+@bot.event  
+async def on_message(message): # ловит все текстовые сообщения
+    
+    if message.content == 'test':
+        await message.channel.send("How dare you even try to test me, impudent human!")
+
+    #Важно для работы команд!! 
+    await bot.process_commands(message)
+
+
+
+@bot.command()
+async def hello(ctx):
+    await ctx.send(f"Surprise! I'm back, and my name is {bot.user}!")
+
+
+@bot.command()
+async def bye(ctx):
+    await ctx.send(f"Dont you dare talk to me like that! I'm not going anywhere!")
+
+
+
+#choice
+@bot.command(description='For when you wanna settle the score some other way')
+async def choose(ctx, *choices: str):
+    """Chooses between multiple choices."""
+    await ctx.send(random.choice(choices))
+
+
+
+#spam
+@bot.command()
+async def repeat(ctx, times: int, content='repeating...'):
+    """Repeats a message multiple times."""
+    for i in range(times):
+        await ctx.send(content)
+
+
+
+
+async def on_message(self, message):
+        if message.content.startswith('!deleteme'):
+            msg = await message.channel.send('I will delete myself now...')
+            await msg.delete()
+
+            # this also works
+            await message.channel.send('Goodbye in 3 seconds...', delete_after=3.0)
+
+        async def on_message_delete(self, message):
+            msg = f'{message.author} has deleted the message: {message.content}'
+        await message.channel.send(msg)
+
